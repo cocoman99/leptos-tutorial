@@ -7,19 +7,32 @@ fn main() {
 
 #[component]
 fn App() -> impl IntoView {
-    let (count, set_count) = create_signal(1);
+    let (x, set_x) = create_signal(0);
 
     view! {
         <button
             on:click=move |_| {
-                // on stable, this is set_count.set(3);
-                //set_count(3);
-                set_count.update(|n| *n *= 2);
+                set_x.update(|n| *n += 10);
             }
+            class:green=move || x.get() % 2 == 1
+            // Set the `style` attribute
+            style="position: absolute"
+            style:left=move || format!("{}px", x.get() + 10)
+            style:background-color=move || format!("rgb({}, {}, 100)", x.get(), 100)
+            style:max-width="400px"
+            // Set a CSS variable for stylesheet use
+            style=("--columns", x)
         >
-            "CLICK HERE: "
-            // on stable, this is move || count.get();
-            {move || count.get()}
+            "Click me: "
+            {move || x.get()}
         </button>
+
+        <progress
+        max="50"
+        // signals are functions, so `value=x` and `value=move || x.get()`
+        // are interchangeable.
+        value=move || x.get() * 2
+        value=x
+        />
     }
 }
