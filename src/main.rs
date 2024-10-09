@@ -7,32 +7,28 @@ fn main() {
 
 #[component]
 fn App() -> impl IntoView {
-    let (x, set_x) = create_signal(0);
+    // create a list of 5 signals
+    let length = 5;
+    let counters = (1..=length).map(|idx| create_signal(idx));
+
+    // each item manages a reactive view
+    // but the list itself will never change
+    let counter_buttons = counters
+        .map(|(count, set_count)| {
+            view! {
+                <li>
+                    <button
+                        on:click=move |_| set_count.update(|n| *n += 10)
+                    >
+                        {count}
+                    </button>
+                </li>
+            }
+        })
+        .collect_view();
 
     view! {
-        <button
-            on:click=move |_| {
-                set_x.update(|n| *n += 10);
-            }
-            class:green=move || x.get() % 2 == 1
-            // Set the `style` attribute
-            style="position: absolute"
-            style:left=move || format!("{}px", x.get() + 10)
-            style:background-color=move || format!("rgb({}, {}, 100)", x.get(), 100)
-            style:max-width="400px"
-            // Set a CSS variable for stylesheet use
-            style=("--columns", x)
-        >
-            "Click me: "
-            {move || x.get()}
-        </button>
-
-        <progress
-        max="50"
-        // signals are functions, so `value=x` and `value=move || x.get()`
-        // are interchangeable.
-        value=move || x.get() * 2
-        value=x
-        />
+        <ul>{counter_buttons}</ul>
     }
 }
+
