@@ -8,6 +8,7 @@ fn main() {
 #[component]
 fn App() -> impl IntoView {
     let (count, set_count) = create_signal(0);
+    let mut user_number: u32 = 4;
 
     view! {
         <h1 style="background-color:#a6edc1;">* * * GUESS-THE-NUMBER * * *</h1>
@@ -17,7 +18,7 @@ fn App() -> impl IntoView {
                 "INPUT YOUR GUESS "<button
                     on:click=move |_| {
                         // on stable, this is set_count.set(3);
-                        set_count.set(3);
+                        set_count.set(user_number);
                     }
                     >
                     "HERE"
@@ -27,7 +28,7 @@ fn App() -> impl IntoView {
                 <button
                     on:click=move |_| {
                         // on stable, this is set_count.set(3);
-                        set_count.set(3);
+                        //count(user_number);
                     }
                     >
                     "HERE"
